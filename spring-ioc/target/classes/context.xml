@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <!-- 
+    	애플리케이션 실행에 필요한 객체 생성시키기(스프링에게 객체 생성을 주문하는 주문서)
+     -->
+     
+     <!-- 
+     	1. <bean />
+     		- 스프링 컨테이너에게 객체 생성을 위임할 클래스를 지정
+     		- id 속성 : 생성된 객체를 식별하는 값
+     		- class 속성 : 클래스의 전체 경로를 지정
+     	
+     	2. <property />
+     		- 의존성 주입 정보를 설정
+     		- name : 의존성을 주입할 멤버변수 이름을 지정(생성된 객체의 참조값이 저장될 멤버변수를 지정)
+     		- ref : 주입할 객체의 식별자를 지정
+      -->
+     
+     <!-- 1-1. ProductJdbcDao, ProductMybatisDao 객체 생성 -->
+     <bean id="jdbcDao" class="ioc.ProductJdbcDao"></bean>
+     <bean id="mybatisDao" class="ioc.ProductMybatisDao"></bean>
+     
+     <!-- 1-2. ProductService 객체 생성 -->
+     <bean id="service" class="ioc.ProductService">
+	    <!-- 2. ioc.ProductService에 dao 멤버변수(setter메소드의 이름)에서 jdbcDao로 찾아지는 객체를 주입해라 -->
+     	<property name="dao" ref="jdbcDao"></property>
+     </bean>
+</beans> 

@@ -17,6 +17,9 @@ public class UserService {
 	
 	// 3. 사용할 메소드 정의
 	public void 회원가입() {
+		System.out.println("조립된 객체 : " + userDao);
+		System.out.println();
+		
 		userDao.getUser();
 		userDao.insertUser();
 	}

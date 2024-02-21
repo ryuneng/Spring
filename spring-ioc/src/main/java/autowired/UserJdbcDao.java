@@ -1,8 +1,10 @@
 package autowired; // 20240220 Day1
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Primary
 public class UserJdbcDao implements UserDao {
 
 	@Override

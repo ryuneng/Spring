@@ -22,4 +22,37 @@
      -->
     <aop:aspectj-autoproxy />
     
+    <bean id="runningTimeCheckAdvice" class="com.sample.aop.RunningTimeCheckAdvice"></bean>
+     
+    <!-- 
+    	<aop:config />
+    		XML 기반 AOP 적용을 설정할 때 사용하는 태그
+    	<aop:pointcut />
+    		pointcut을 정의하는 태그
+    	<aop:aspect />
+    		AOP 적용할 때 필요한 Advice와 Pointcut을 결합한 Aspect를 정의하는 태그
+     -->
+    <aop:config>
+    	<aop:pointcut expression="execution(* com.sample.service.*.*(..))" id="servicePointcut"/>
+    	<aop:aspect ref="runningTimeCheckAdvice">
+    		<aop:around method="checkRunningTime" pointcut-ref="servicePointcut"/>
+    	</aop:aspect>
+    </aop:config>
 </beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

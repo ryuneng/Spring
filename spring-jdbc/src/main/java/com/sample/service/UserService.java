@@ -2,23 +2,28 @@ package com.sample.service; // 20240222 Day3
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sample.dao.UserDao;
 import com.sample.vo.User;
 
 @Service
+@Transactional
 public class UserService {
 
 	@Autowired
 	private UserDao userDao;
 	
 	public void registerUser(User user) {
-		User savedUser = userDao.getUserById(user.getId());
-		if (savedUser != null) {
-			throw new RuntimeException("["+user.getId()+"] 아이디가 이미 사용중입니다.");
-		}
+//		User savedUser = userDao.getUserById(user.getId());
+//		if (savedUser != null) {
+//			throw new RuntimeException("["+user.getId()+"] 아이디가 이미 사용중입니다.");
+//		}
 		
-		userDao.insertUser(user);
+		userDao.insertUser(user); // 저장작업
+		
+		user.setEmail(null);
+		userDao.updateUser(user); // 수정작업, 오류 발생시키기
 	}
 	
 	public User getUserDetail(String id) {

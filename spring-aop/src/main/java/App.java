@@ -12,7 +12,6 @@ public class App {
 		
 		UserService userService = ctx.getBean(UserService.class);
 		
-<<<<<<< HEAD
 		userService.register("hong", "zxcv1234", "홍길동");
 		System.out.println();
 
@@ -23,16 +22,5 @@ public class App {
 //		User other = userService.getUser("kim");
 //		System.out.println(other.getId() + ", " + other.getName());
 //		System.out.println();
-=======
-		// @Aspect 로그출력 1
-		userService.register("hong", "zxcv1234", "홍길동");
-		// @Aspect 로그출력 2
-		User user = userService.getUser("hong");
-		System.out.println(user.getId() + ", " + user.getName());
-		
-		// @Aspect 로그출력 3
-		User other = userService.getUser("kim");
-		System.out.println(other.getId() + ", " + other.getName());
->>>>>>> refs/remotes/origin/main
 	}
 }

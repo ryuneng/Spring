@@ -2,11 +2,66 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sample.mapper.ProductMapper">
 
-<!-- Mapper xml 파일은 Mapper interface와 항상 한 쌍 -->
+	<!-- 
+		ProductMapper 인터페이스의
+			void insertProduct(Product product) 추상메서드와 연관된 SQL 구문
+			
+			출력 : void(없음)	 - resultType
+			입력 : Product	 - parameterType
+	 -->
 	<insert id="insertProduct" parameterType="com.sample.vo.Product">
 		insert into shop_products
 		(product_no, product_name, product_description, product_stock, product_price)
 		values
 		(products_seq.nextval, #{name}, #{description}, #{stock}, #{price})
 	</insert>
+	
+	<!-- 
+		ProductMapper 인터페이스의
+			List<Product> getAllProducts() 추상메서드와 연관된 SQL 구문
+			
+			출력 : List<Product>	- resultType
+			입력 : 없음			- parameterType
+	 -->
+	<select id="getAllProducts" resultType="com.sample.vo.Product">
+		select
+			product_no			    as no,
+			product_name		    as name,
+			product_description     as description,
+			product_stock		    as stock,
+			product_price		    as price,
+			product_status		    as status,
+			product_filename		as filename,
+			product_created_date	as createdDate,
+			product_updated_date	as updatedDate
+		from
+			shop_products
+		order by
+			product_no desc
+	</select>
+	
+	<!-- 
+		ProductMapper 인터페이스의
+			Product getProductByNo(int no) 추상메서드와 연관된 SQL 구문
+			
+			출력 : Product	- resultType
+			입력 : int		- parameterType
+	 -->
+	<select id="getProductByNo" parameterType="int" resultType="com.sample.vo.Product">
+		select
+			product_no			    as no,
+			product_name		    as name,
+			product_description     as description,
+			product_stock		    as stock,
+			product_price		    as price,
+			product_status		    as status,
+			product_filename		as filename,
+			product_created_date	as createdDate,
+			product_updated_date	as updatedDate
+		from
+			shop_products
+		where
+			product_no = #{value} <!-- 입력받을 값이 객체가 아니고 하나일 때는 value로 적으면 됨 -->
+	</select>
+	
 </mapper>

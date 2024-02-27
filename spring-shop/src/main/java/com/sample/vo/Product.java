@@ -39,5 +39,13 @@ public class Product {
 		this.createdDate = createdDate;
 	}
 	
-	
+	// 아래 메서드를 통해 jsp에서 status를 원하는 형식으로 텍스트화해서 StatusText로 호출 가능
+	public String getStatusText() {
+		if ("SELL".equals(status)) {
+			return "판매중";
+		} else if ("SOLD_OUT".equals(status)) {
+			return "품절";
+		}
+		return null;
+	}
 }

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.sample.service.CompanyService;
 import com.sample.service.ProductService;
+import com.sample.vo.Company;
 import com.sample.vo.Product;
 import com.sample.web.dto.Criteria;
 import com.sample.web.dto.ListDto;
@@ -38,6 +40,8 @@ public class ProductController {
 	 */
 	@Autowired // 객체 찾아서 넣어줌 (객체 생성 X)
 	private ProductService productService;
+	@Autowired
+	private CompanyService companyService;
 	
 	/*
 	    요청 URL
@@ -87,7 +91,10 @@ public class ProductController {
 	}
 	
 	@GetMapping("/create")
-	public String form() {
+	public String form(Model model) {
+		// 전체 회사정보를 조회하고, Model에 저장한다. (등록폼에서 제조사 선택할 수 있어야 하니까)
+		List<Company> companyList = companyService.getAllCompanies();
+		model.addAttribute("companyList", companyList);
 		
 		return "product/form";    // "/WEB-INF/views/product/form.jsp"로 내부이동
 	}
@@ -95,6 +102,14 @@ public class ProductController {
 	@PostMapping("/create") // 상품등록 폼에서 등록 버튼 눌렀을 때
 	public String create(ProductCreateForm productCreateForm) { // Form 객체(Command 객체)
 		productService.createProduct(productCreateForm);
+		
+		return "redirect:list";
+	}
+	
+	@GetMapping("/delete")
+						// 요청핸들러메서드의 변수명을 다르게 가져가고 싶으면 @RequestParam 을 부착해줘야 함 (변수명을 no로 설정할거면 부착안해도 됨)
+	public String delete(@RequestParam("no") List<Integer> noList) {
+		productService.deleteProducts(noList);
 		
 		return "redirect:list";
 	}

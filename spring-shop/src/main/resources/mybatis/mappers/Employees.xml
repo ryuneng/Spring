@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.mapper.EmpMapper">
+	<!-- 전체 직원 조회 -->
+	<select id="getAllEmps" resultType="com.sample.vo.Employee">
+		select
+			emp_no			 as no,
+			emp_name		 as name,
+			emp_tel			 as tel,
+			emp_email		 as email,
+			emp_salary		 as salary,
+			emp_hire_date	 as hireDate,
+			dept_no			 as "dept.no",
+			emp_created_date as createdDate,
+			emp_updated_date as updatedDate
+		from
+			shop_employees
+	</select>
+	
+	<!-- 직원 등록 -->
+	<insert id="insertEmp" parameterType="com.sample.vo.Employee">
+		insert into shop_employees
+		(emp_no, emp_name, emp_tel, emp_email, emp_salary, emp_hire_date, dept_no)
+		values
+		(emps_seq.nextval, #{name}, #{tel}, #{email}, #{salary}, #{hireDate}, #{dept.no})
+	</insert>
+	
+	<!-- 직원 번호로 직원 1명 조회 -->
+	<select id="getEmpByNo" parameterType="int" resultType="com.sample.vo.Employee">
+		select
+			emp_no			as no,
+			emp_name		as name,
+			emp_tel			as tel,
+			emp_email		as email,
+			emp_salary		as salary,
+			emp_hire_date	as hireDate,
+			dept_no			as "dept.no"
+		from
+			shop_employees
+		where
+			emp_no = #{value} <!-- 입력받을 값이 객체가 아니고 하나일 때는 value로 적으면 됨 -->
+	</select>
+	
+	<!-- 직원 정보 수정 -->
+	<update id="updateEmp" parameterType="com.sample.vo.Employee">
+		update shop_employees
+		set
+			emp_name      = #{name},
+			emp_tel       = #{tel},
+			emp_email     = #{email},
+			emp_salary    = #{salary},
+			emp_hire_date = #{hireDate},
+			dept_no       = #{dept.no}
+		where
+			emp_no = #{no}
+	</update>
+	
+	<!-- 직원 정보 삭제 -->
+	<delete id="deleteEmp" parameterType="com.sample.vo.Employee">
+		delete from shop_employees
+		where
+			emp_no = #{no}
+	</delete>
+</mapper>

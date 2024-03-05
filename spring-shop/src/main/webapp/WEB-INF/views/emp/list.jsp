@@ -95,7 +95,7 @@
 				</table>
 				
 				<div class="row">
-					<div class="col-4">
+					<div class="col-5">
 						<div class="row row-cols-lg-auto g-3">
 							<div>
 								<select class="form-select" name="opt">
@@ -113,8 +113,37 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-4">
-					
+					<div class="col-7">
+						<c:if test="${paging.totalRows ne 0 }"> <!-- ne : not equal, totalRows가 0이 아닐 때 -->
+							<nav>
+								<ul class="pagination">
+									<li class="page-item">
+										<a href="list?page=${paging.currentPage - 1 }"
+											class="page-link ${paging.first ? 'disabled' : '' }"
+											onclick="changePage(${paging.currentPage - 1}, event)">
+											<
+										</a>
+									</li>
+									<!-- var=num은 내가 정하는 변수명일 뿐 -->
+									<c:forEach var="num" begin="${paging.beginPage }" end="${paging.endPage }">
+										<li class="page-item ${paging.currentPage eq num ? 'active' : '' }">
+											<a href="list?page=${num }"
+												class="page-link"
+												onclick="changePage(${num}), event">
+												${num }
+											</a>
+										</li>
+									</c:forEach>
+									<li class="page-item">
+										<a href="list?page=${paging.currentPage + 1 }"
+											class="page-link ${paging.last ? 'disabled' : '' }"
+											onclick="changePage(${paging.currentPage + 1}, event)">
+											>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</c:if>
 					</div>
 				</div>
 			</form>
@@ -128,5 +157,16 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+function chnageRows() {
+	document.getElementById("form-emps").submit();
+}
+
+function changePage(page, event) {
+	event.preventDefault();
+	document.querySelector("input[name=page]").value = page;
+	document.getElementById("form-emps").submit();
+}
+</script>
 </body>
 </html>

@@ -18,9 +18,15 @@
 		<div class="col-12">
 			<h1 class="fs-3">직원관리 - 직원정보수정</h1>
 			
+			<!-- 
+				* 수정한 직원번호 넘겨주는 방법
+				1. form의 action 속성의 값을 action="modify?no=${emp.no } 로 넘겨주기 (요청객체의 속성으로 만들어진 Employee 객체에 저장된 값 꺼내옴)
+				2. form의 action 속성의 값을 action="modify?no=${param.no } 로 넘겨주기 (요청객체의 요청파라미터에 저장되어 있던 값 꺼내옴)
+				3. input태그의 속성값을 type="hidden" name="no" value="${emp.no}" 로 넘겨주기
+			 -->
 			<form class="border bg-light p-3" method="post" action="modify?no=${emp.no }"> <!-- 수정한 직원번호 넘겨주기 -->
 				<div class="form-group mb-3">
-					<label class="form-label">부서번호</label>
+					<label class="form-label">부서</label>
 					<select class="form-select" name="deptNo" >
 						<c:forEach var="dept" items="${deptList }">
 							<option value="${dept.no }" ${dept.no eq emp.dept.no ? 'selected' : '' }> ${dept.name }</option>
@@ -28,7 +34,7 @@
 					</select>
 				</div>
 				<div class="form-group mb-3">
-					<label class="form-label">직원명</label>
+					<label class="form-label">이름</label>
 					<input type="text" class="form-control" name="name" value="${emp.name }" />
 				</div>
 				<div class="form-group mb-3">

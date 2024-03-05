@@ -20,7 +20,7 @@
 			
 			<form class="border bg-light p-3" method="post" action="create">
 				<div class="form-group mb-3">
-					<label class="form-label">부서번호</label>
+					<label class="form-label">부서</label>
 					<select class="form-select" name="deptNo">
 						<c:forEach var="dept" items="${deptList }">
 							<option value="${dept.no }"> ${dept.name }</option>
@@ -28,7 +28,7 @@
 					</select>
 				</div>
 				<div class="form-group mb-3">
-					<label class="form-label">직원명</label>
+					<label class="form-label">이름</label>
 					<input type="text" class="form-control" name="name" />
 				</div>
 				<div class="form-group mb-3">

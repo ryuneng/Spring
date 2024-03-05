@@ -15,7 +15,6 @@ public interface ProductMapper {
 	List<Product> getProducts(Criteria criteria);
 	
 	void insertProduct(Product product);
-	List<Product> getAllProducts(); // select 조회 결과가 행이 여러 건일 때는 무조건 List
 	Product getProductByNo(int no);
 	void deleteProducts(@Param("noList") List<Integer> noList);
 }

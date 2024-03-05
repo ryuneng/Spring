@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sample.mapper.EmpMapper">
+	
+	<select id="getTotalRows" parameterType="com.sample.web.dto.Criteria" resultType="int">
+		select
+			count(*)
+		from
+			shop_employees
+	</select>
+	
 	<!-- 전체 직원 조회 -->
-	<select id="getAllEmps" resultType="com.sample.vo.Employee">
+	<select id="getAllEmps" parameterType="com.sample.web.dto.Criteria" resultType="com.sample.vo.Employee">
 		select
 			emp_no			 as no,
 			emp_name		 as name,
@@ -56,7 +64,7 @@
 	</update>
 	
 	<!-- 직원 정보 삭제 -->
-	<delete id="deleteEmp" parameterType="com.sample.vo.Employee">
+	<delete id="deleteEmp" parameterType="int">
 		delete from shop_employees
 		where
 			emp_no = #{no}

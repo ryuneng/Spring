@@ -20,7 +20,7 @@ public class UserRegisterForm {
 
 	// vo는 테이블과 관련된 클래스라서 이런 어노테이션을 부착할 수 없기 때문에 Form클래스가 따로 존재
 	@NotBlank(message = "아이디는 필수입력값입니다.") // @NotBlank : 입력값 유효성 체크
-	@Size(min = 5, max = 20, message = "아이디는 최소 5글자 이상, 최대 20글자 이하만 가능합니다.") 
+	@Size(min = 3, max = 20, message = "아이디는 최소 3글자 이상, 최대 20글자 이하만 가능합니다.") 
 	private String id;
 	
 	@NotBlank(message = "비밀번호는 필수입력값입니다.")

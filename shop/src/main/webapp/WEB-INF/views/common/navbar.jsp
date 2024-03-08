@@ -7,6 +7,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="/">홈</a>
             </li>
+            <!-- hasRole 메서드를 통해 자동으로 ROLE_ADMIN 권한을 가지고 있는 사람에게만 아래 메뉴가 노출됨 -->
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+	            <li class="nav-item">
+	                <a class="nav-link" href="/admin/home">관리자</a>
+	            </li>
+            </sec:authorize>
         </ul>
         
         <sec:authorize access="isAuthenticated()">

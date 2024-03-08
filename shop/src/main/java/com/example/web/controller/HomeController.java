@@ -87,4 +87,10 @@ public class HomeController {
 	public String loginform() {
 		return "loginform";
 	}
+	
+	// 관리자 아닌 유저가 관리자 페이지 진입하려고 할 때 오류
+	@GetMapping("/accessdenied")
+	public String accessDenied() {
+		return "error/denied";
+	}
 }

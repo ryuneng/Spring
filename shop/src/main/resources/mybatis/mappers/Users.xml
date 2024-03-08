@@ -30,10 +30,21 @@
 	</resultMap>
 
 	<insert id="insertUser" parameterType="com.example.vo.User">
+		<!-- 
+			selectKey를 통해 insert문 실행 전에 시퀀스 조회해서 증가된 시퀀스 번호를 획득하고,
+			파라미터타입에 명시되어 있는 객체(vo.User)의 프로퍼티를 keyProperty="no"으로 받아와서 int 타입으로 반환
+			==> insert문에서 #{no}로 사용 가능
+		 -->
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select
+				users_seq.nextval
+			from
+				dual
+		</selectKey> 
 		insert into shop_users
 		(user_no, user_id, user_password, user_name, user_email, user_tel, user_birth)
 		values
-		(users_seq.nextval, #{id}, #{password}, #{name}, #{email}, #{tel}, #{birth})
+		(#{no}, #{id}, #{password}, #{name}, #{email}, #{tel}, #{birth})
 	</insert>
 	
 	<update id="updateUser" parameterType="com.example.vo.User">

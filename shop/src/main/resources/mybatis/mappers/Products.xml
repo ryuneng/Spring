@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.ProductMapper">
+	
+		<!--
+			<association />, <collection />
+				1. <association /> : 복잡한 타입의 연관관계를 나타내며, "has-one"타입의 관계를 나타낸다.
+				2. <collection /> : 복잡한 타입의 콜렉션 연관관계를 나타내며, "has-many"타입의 관계를 나타낸다.
+		
+				class Product {
+					int no;
+					String name;
+					int price;
+					Company company;		  - 복잡한 타입의 연관관계
+					ProductCategory category; - 복잡한 타입의 연관관계
+					List<Review> reviews;     - 복잡한 타입의 콜렉션 연관관계
+				}
+		
+		
+			<association />
+				- 복잡한 타입의 연관 관계를 나타낸다.(대부분 객체 타입)
+			    - "has-one" 타입의 관계를 다루는 태그
+			      ex) 상품 - 제조사
+			          사원 - 소속부서
+			          게시글 - 작성자
+			    - 위의 예시에서 상품객체에는 제조사정보를 표현하는 Company company 멤버변수(프로퍼티)가 있다.
+			      company 프로퍼티에는 Company 객체가 연결되어야 한다.
+			      CompanyMapper의 getCompanyByNo SQL 구문은 제조사 번호를 전달받아서 제조사정보를 조회하고,
+			      조회된 정보를 Company 객체에 담아서 반환한다.
+			      <association> 태그로 Product객체의 Company company 프로퍼티에 대입될 객체를
+			      CompanyMapper의 getCompanyByNo SQL 구문을 실행시켜서 획득한 Company 객체를 대입시킨다.
+			      
+			    * 한마디로, 매퍼에 있는 다른 SQL문을 실행해서 그 실행결과를 property에 담는다.
+			    * 쿼리가 단순해지는 장점이 있는 반면, 쿼리가 3번 실행된다는 단점이 있다.
+			
+			
+			<association /> 태그의 주요 속성
+			    - column : 컬럼명, 위의 예시에서는 getCompanyByNo SQL 구문 실행에 필요한 값이 들어있는 컬럼명이다.
+			               즉, shop_products 테이블에서 제조사 번호가 들어있는 company_no 컬럼이다.
+			               전달할 값이 복합키인 경우에는 column="{prop1=column1, prop2=column2}"와 같이 작성한다.
+			               
+			    - property : <association /> 태그로 실행시킨 다른 SQL 구문의 결과값을 저장할 프로퍼티 이름
+			                 즉, Product 객체의 Company company 필드의 company다.
+			                 
+			    - select : 실행시킬 다른 SQL 구문의 식별자 ID
+			               같은 Mapper일 때는 ID값만 적고, 다른 Mapper일 때는 패키지명+매퍼인터페이스명 + ID값을 적는다.
+		 -->
+	<resultMap type="com.example.vo.Product" id="ProductResultMap">
+		<id column="product_no" property="no"/>
+		<result column="product_name" property="name"/>
+		<result column="product_description" property="description"/>
+		<result column="product_stock" property="stock"/>
+		<result column="product_status" property="status"/>
+		<result column="product_price" property="price"/>
+		<result column="product_filename" property="filename"/>
+		<result column="product_updated_date" property="updatedDate"/>
+		<result column="product_created_date" property="createdDate"/>
+		<association property="company" column="company_no"
+			select="com.example.mapper.CompanyMapper.getCompanyByNo" />
+		<association property="category" column="product_category_no"
+			select="com.example.mapper.ProductCategoryMapper.getProductCategoryByNo" />
+	</resultMap>
+	
+	<select id="getProductsByCategoryNo" parameterType="int" resultType="com.example.vo.Product">
+		select
+			P.product_no 	 as no,
+			P.product_name   as name,
+			P.product_price  as price,
+			P.company_no	 as "company.no",
+			C.company_name   as "company.name",
+			P.product_status as status
+		from
+			shop_products P, shop_companies C
+		where
+			P.product_category_no = #{value}
+			and P.company_no = C.company_no
+		order by
+			P.product_no desc
+	</select>
+	
+	<select id="getProductByNo" parameterType="int" resultMap="ProductResultMap">
+		select
+			*
+		from
+			shop_products
+		where
+			product_no = #{value}
+	</select>
+	
+</mapper>

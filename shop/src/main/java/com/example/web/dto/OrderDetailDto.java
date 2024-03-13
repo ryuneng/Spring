@@ -18,6 +18,18 @@ public class OrderDetailDto {
 	private Order order;
 	private List<OrderItem> orderItems;
 	private OrderPayment payment;
+	
+	public int getTotalItemCount() {
+	    int count = 0;
+	    for (OrderItem item : orderItems) {
+	        count += item.getAmount();
+	    }
+	    return count;
+	}
+	   
+	public String getDescription() {
+	   return orderItems.get(0).getProduct().getName() + " 외 " + (getTotalItemCount() - orderItems.get(0).getAmount()) + "개";
+	}
 }
 /*
 	* dto 생성 목적 : 주문상세정보에 표현할 모든 값들을 한군데 모음.

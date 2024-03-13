@@ -16,7 +16,7 @@
 <div class="container">
 	<div class="row mb-3">
 		<div class="col-12">
-			<h1>주문 - 완료 (주문/결제 정보 확인)</h1>
+			<h1>주문 상세 정보</h1>
 		</div>
 	</div>
 	<div class="row mb-3">

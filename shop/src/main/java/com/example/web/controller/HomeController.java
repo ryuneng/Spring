@@ -6,11 +6,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.exception.AlreadyUsedEmailException;
 import com.example.exception.AlreadyUsedIdException;
 import com.example.service.UserService;
+import com.example.vo.Company;
+import com.example.vo.User;
 import com.example.web.form.UserRegisterForm;
+
+import java.util.List;
 
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +38,36 @@ public class HomeController {
 	
 	private final UserService userService;
 	
+	@GetMapping("/app1")
+	@ResponseBody
+	public String app1() {
+		return "텍스트입니다.";
+	}
+	
+	@GetMapping("/app2")
+	@ResponseBody
+	public String[] app2() {
+		String[] userNames = {"홍길동", "강감찬", "류관순"};
+		
+		return userNames;
+	}
+	
+	@GetMapping("/app3")
+	@ResponseBody
+	public List<Company> app3() {
+		Company c1 = new Company();
+		c1.setNo(100);
+		c1.setName("삼성전자");
+		c1.setTel("02-1234-5678");
+		
+		Company c2 = new Company();
+		c2.setNo(100);
+		c2.setName("삼성전자");
+		c2.setTel("02-1234-5678");
+		
+		return List.of(c1, c2);
+	}
+	
 	// 홈으로 이동
 	@RequestMapping("/")
 	public String home() {
@@ -46,8 +82,8 @@ public class HomeController {
 	}
 	
 	// 회원가입 처리
-	@PostMapping("/register")
-	public String register(@Valid UserRegisterForm form, BindingResult errors) { // @Valid: 폼클래스 안에 있는 값을 자동으로 체크해줌, BindingResult: 검사결과(위반내용)
+	@PostMapping("/register")// @Valid: 폼클래스 안에 있는 값을 자동으로 체크해줌, BindingResult: 검사결과(위반내용)
+	public String register(@Valid UserRegisterForm form, BindingResult errors, RedirectAttributes redirectAttributes) {
 		
 		// 폼 입력값 유효성 체크를 통과하지 못한 경우, 회원가입화면으로 내부이동시킨다.
 		if (errors.hasErrors()) {
@@ -56,7 +92,11 @@ public class HomeController {
 		
 		try {
 			// 폼 입력값 유효성 체크를 통과한 경우
-			userService.registerUser(form);
+			User user = userService.registerUser(form);
+			redirectAttributes.addFlashAttribute("user", user); // 다음 요청한 jsp페이지에서 값을 뿌릴 수 있음
+			
+			return "redirect:/completed";
+			
 		} catch (AlreadyUsedIdException ex) {
 			// 이미 사용중인 아이디인 경우, 유효성 체크를 통과하지 못한 것으로 간주한다.
 			// rejectValue(필드명, 에러코드, 에러메시지) 메서드는 BindingResult객체에 FieldError를 추가한다.
@@ -69,9 +109,12 @@ public class HomeController {
 			return "form";
 		}
 			
-		return "redirect:/";
 	}
 	
+	@GetMapping("/completed")
+	public String completed() {
+		return "completed";
+	}
 	
 	/*
 	    요청방식

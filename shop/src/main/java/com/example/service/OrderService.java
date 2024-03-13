@@ -17,6 +17,7 @@ import com.example.vo.OrderPayment;
 import com.example.vo.Product;
 import com.example.vo.User;
 import com.example.web.dto.OrderDetailDto;
+import com.example.web.dto.OrderListDto;
 import com.example.web.form.OrderForm;
 
 import lombok.RequiredArgsConstructor;
@@ -99,5 +100,12 @@ public class OrderService {
 		dto.setPayment(payment);
 		
 		return dto;
+	}
+
+	public List<OrderListDto> getMyOrders(String userId) {
+		User user = userMapper.getUserById(userId);
+		List<OrderListDto> dtos = orderMapper.getOrdersByUserNo(user.getNo());
+		
+		return dtos;
 	}
 }

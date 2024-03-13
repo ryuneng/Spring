@@ -1,5 +1,7 @@
 package com.example.service; // 20240306 Day11
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,10 @@ public class UserService {
 	private final UserMapper userMapper;
 	private final UserRoleMapper userRoleMapper;
 	
+	public List<User> getAllUsers() {
+		return userMapper.getAllUsers();
+	}
+	
 	// 유저 단건 조회
 	public User getUser(String id) {
 		
@@ -50,7 +56,7 @@ public class UserService {
 	    		6. 신규 회원은 ROLE_USER 권한을 부여하기 위해서 UserRole 객체를 생성해서 사용자번호와 "ROLE_USER"객체를 대입한다.
 	    		7. 신규 회원의 권한 정보가 저장된 UserRole객체를 mybatis에 전달해서 데이터베이스에 저장시킨다.
 	 */
-	public void registerUser(UserRegisterForm form) {
+	public User registerUser(UserRegisterForm form) {
 		// 1.
 		User foundUser = userMapper.getUserById(form.getId());
 		// 2.
@@ -79,5 +85,7 @@ public class UserService {
 		
 		// 7.
 		userRoleMapper.insertUserRole(userRole);
+		
+		return user; // 회원가입완료 화면에서 가입한 정보 뿌려주기 위해 유저 반환
 	}
 }

@@ -8,9 +8,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
+@NoArgsConstructor // 기본생성자 추가
 public class ProductCategory {
 
 	private int no;
 	private String name;
+	
+	public ProductCategory(int no) {
+		this.no = no;
+	}
 }

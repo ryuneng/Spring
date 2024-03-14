@@ -22,7 +22,7 @@
 		from
 			shop_companies
 		order by
-			company_ no asc
+			company_no asc
 	</select>
 	
 	<select id="getCompanyByNo" parameterType="int" resultMap="CompanyResultMap">

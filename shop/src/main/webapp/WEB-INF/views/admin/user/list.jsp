@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="../common/tags.jsp" %>
+<%@ include file="../../common/tags.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,7 +12,7 @@
 <title>bootstrap</title>
 </head>
 <body>
-<%@ include file="../common/navbar.jsp" %>
+<%@ include file="../../common/navbar.jsp" %>
 <div class="container">
 	<div class="row mb-3">
 		<div class="col-12">
@@ -23,8 +23,8 @@
 			<div class="card">
 				<div class="card-header">관리자 메뉴</div>
 				<div class="list-group list-group-flush">
-					<a href="/admin/users" class="list-group-item list-group-item-action active">사용자 관리</a>
-					<a href="" class="list-group-item list-group-item-action">상품 관리</a>
+					<a href="/admin/user/list" class="list-group-item list-group-item-action active">사용자 관리</a>
+					<a href="/admin/product/list" class="list-group-item list-group-item-action">상품 관리</a>
 					<a href="" class="list-group-item list-group-item-action">주문 관리</a>
 					<a href="" class="list-group-item list-group-item-action">결제 관리</a>
 					<a href="" class="list-group-item list-group-item-action">공지사항 관리</a>
@@ -111,15 +111,38 @@
 	// 부트스트랩 모달(팝업창) 객체를 생성한다. (함수 안에 넣어놓으면 할 때마다 실행하니까 함수 밖에 작성)
 	const myModal = new bootstrap.Modal(document.getElementById('modal-user-info'));
 	
+	// fetch API - 자바스크립트에 내장되어 있는 기능
+	// async - 이 함수는 비동기 통신을 수행하는 함수다.
+	// await - 해당 함수가 처리를 완료할 때까지 기다린다.
+	async function showUserInfo(id) {
+		let response = await fetch("/admin/users/" + id);
+		let user = await response.json();
+		
+		// 화면의 일부분을 갱신하는 작업
+		document.getElementById("user-no").textContent = user.no;
+		document.getElementById("user-id").textContent = user.id;
+		document.getElementById("user-name").textContent = user.name;
+		document.getElementById("user-created-date").textContent = user.createdDate;
+		document.getElementById("user-email").textContent = user.email;
+		document.getElementById("user-tel").textContent = user.tel;
+		document.getElementById("user-birth").textContent = user.birth;
+		
+		// 모달 창 보여주기
+		myModal.show();
+	}
+	
+	/*
 	function showUserInfo(id) {
 		
-		let xhr = new XMLHttpRequest();							// 1. 서버와 HTTP 통신을 하는 XMLHttpRequest 객체를 생성한다.
+		let xhr = new XMLHttpRequest();							// 1. 서버와 HTTP 통신을 하는 XMLHttpRequest 객체를 생성한다. (AJAX 요청 객체 생성)
 		xhr.onreadystatechange = function() {					// 2. xhr객체의 readyState값이 변경될 때마다 실행되는 이벤트핸들러 함수를 등록한다.
 			if (xhr.readyState == 4 && xhr.status == 200) {		// 5. readyState=4:응답이 왔다. status=200:성공
-				let text = xhr.responseText;					// 6. xhr의 responseText 프로퍼티에서 텍스트응답데이터를 조회한다.
+				let text = xhr.responseText;					// 6. 직렬화된 데이터 조회) xhr의 responseText 프로퍼티에서 텍스트응답데이터를 조회한다.
 				console.log(text);
-				let user = JSON.parse(text);					// 7. user = {no:1002, id:"hong", name:"홍길동",....}
+				let user = JSON.parse(text);					// 7. 역직렬화된 데이터 조회) 자바스크립트 객체로 변환 user = {no:1002, id:"hong", name:"홍길동",....}
+				console.log(user);
 				
+				// 화면의 일부분을 갱신하는 작업
 				document.getElementById("user-no").textContent = user.no;
 				document.getElementById("user-id").textContent = user.id;
 				document.getElementById("user-name").textContent = user.name;
@@ -128,12 +151,14 @@
 				document.getElementById("user-tel").textContent = user.tel;
 				document.getElementById("user-birth").textContent = user.birth;
 				
+				// 모달 창 보여주기
 				myModal.show();
 			}
 		}
 		xhr.open("GET", "/admin/users/" + id);					// 3. xhr객체를 초기화한다. 요청방식, 요청URL을 지정한다.
 		xhr.send(null);											// 4. 서버로 요청을 보낸다.
 	}
+	*/
 </script>
 </body>
 </html>

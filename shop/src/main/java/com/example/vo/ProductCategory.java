@@ -13,6 +13,7 @@ public class ProductCategory {
 
 	private int no;
 	private String name;
+	private int parentNo; // 카테고리의 부모
 	
 	public ProductCategory(int no) {
 		this.no = no;

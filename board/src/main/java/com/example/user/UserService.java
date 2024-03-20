@@ -2,6 +2,7 @@ package com.example.user; // 20240319 Day20
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	
 	/**
 	 * 신규 사용자 정보가 저장된 UserSignupForm 객체를 전달받아서 사용자 정보를 회원가입 시킨다.
@@ -33,7 +35,7 @@ public class UserService {
 			throw new RuntimeException("email");
 		}
 		
-		User user = form.toEntity();
+		User user = form.toEntity(passwordEncoder);
 		return userRepository.save(user);
 	}
 

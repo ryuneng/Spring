@@ -1,0 +1,85 @@
+<html layout:decorate="~{layout/base}">
+<div layout:fragment="content" class="container my-3">
+	<div class="row mb-3">
+		<div class="col-12">
+			<h1>게시글 목록</h1>
+			
+			<table class="table">
+				<colgroup>
+					<col width="10%">
+					<col width="50%">
+					<col width="20%">
+					<col width="20%">
+				</colgroup>
+				<thead>
+						<th>순번</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>등록일</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					<!-- foreach같은 반복문, post: 반복문 내에서 사용할 변수명 -->
+					<tr th:each="post, loop : ${paging}">
+						<!-- 
+							게시글 순번
+								- 역순으로 표시
+								    전체 게시글 갯수 - (현재 페이지번호 * 페이지당 게시글 갯수) - 인덱스
+								    ${paging.totalElements - (paging.number*paging.size) - loop.index}
+								- 순차적으로 표시
+								    (현재 페이지번호 * 페이지당 게시글 갯수) + 카운트
+								    ${(paging.number*paging.size) + loop.count}
+						 -->
+						<td th:text="${paging.totalElements - (paging.number*paging.size) - loop.index}">1</td>
+						<td><a th:href="@{/post/detail(id=${post.id})}" th:text="${post.title}">연습</a></td>
+						<td th:text="${post.user.name}">홍길동</td>
+						<td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd')}">2024-03-20</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<!-- 페이지 내비게이션 -->
+			<!-- 
+				th:if="${조건식}"
+					- 조건식이 true로 판정되면 해당 HTML 컨텐츠가 화면에 출력된다.
+					
+				${paging}은 Page<T>객체를 조회한다.
+					${paging.nubmer}		: 현재 페이지번호 반환
+					${paging.size}			: 한 페이지 당 출력할 데이터 갯수 반환
+					${paging.totalPages}	: 총 페이지 갯수 반환
+					${paging.totalElements}	: 총 데이터 갯수 반환
+					${paging.empty}			: Page<T>객체에 content(조회결과)가 없는 경우 true 반환
+					${paging.first}			: 첫번째 페이지인 경우 true 반환
+					${paging.last}			: 마지막번째 페이지인 경우 true 반환
+					${paging.hasPrevious}	: 현재 페이지의 이전 페이지가 존재할 때 true 반환
+					${paging.hasNext}		: 현재 페이지의 다음 페이지가 존재할 때 true 반환
+			 -->
+			<div th:if="${!paging.empty}">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:classappend="${paging.first} ? 'disabled'">
+						<a th:href="@{/post/list(page=${paging.number - 1})}" class="page-link">이전</a>
+					</li>
+					<!-- 
+						th:classappend="${조건식} ? 값1 : 값2"
+						th:classappend="${조건식} ? 값1"
+						
+							- 조건식이 true로 판정되면 값1을 기존 클래스 속성값에 추가하고,
+							  조건식이 false로 판정되면 값2를 기존 클래스 속성값에 추가한다.
+							* 조건식이 false로 판정될 때 추가할 값이 없으면 값2부분을 생략할 수 있다.
+					 -->
+					<li th:each="num : ${#numbers.sequence(0, paging.totalPages - 1)}"
+						th:if="${num >= paging.number - 3 and num <= paging.number + 3}"
+					    class="page-item" th:classappend="${num == paging.number} ? 'active'">
+						<a th:href="@{/post/list(page=${num})}" th:text="${num + 1}" class="page-link">1</a>
+					</li>
+					
+					<li class="page-item" th:classappend="${paging.last} ? 'disabled'">
+						<a th:href="@{/post/list(page=${paging.number + 1})}" class="page-link">다음</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

@@ -40,6 +40,7 @@ public class UserSignupForm {
 		user.setName(name);
 		user.setEmail(email);
 		user.setTel(tel);
+		user.setUserRole(UserRole.ROLE_USER);
 		
 		return user;
 	}

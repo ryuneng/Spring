@@ -79,6 +79,11 @@
 					</li>
 				</ul>
 			</div>
+			
+			<!-- 인증된 사용자에게만 글작성 버튼 노출 -->
+			<div class="text-end" sec:authorize="isAuthenticated()">
+				<a th:href="@{/post/create}" class="btn btn-primary">새 게시글 등록하기</a>
+			</div>
 		</div>
 	</div>
 </div>

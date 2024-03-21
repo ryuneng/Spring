@@ -43,6 +43,11 @@ import lombok.Setter;
     	4) AUTO
     		- default 기본키 생성 방식
     		- 데이터베이스에 따라 적절한 기본키를 자동으로 생성한다.
+    		
+	@Enumerated
+		- 상수데이터의 주요한 값(순번과 이름) 중에서 어떤 값을 엔티티에서 사용할 것인지를 지정하는 어노테이션
+		- EnumType.STRING - 상수데이터의 이름을 사용 / EnumType.ORDINAL - 상수데이터의 순번을 사용
+		- 
  */
 @Entity
 @Table(name = "board_users")

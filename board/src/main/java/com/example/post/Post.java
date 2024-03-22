@@ -1,13 +1,16 @@
 package com.example.post; // 20240319 Day20
 
+import java.util.List;
 import java.util.Set;
 
+import com.example.reply.Reply;
 import com.example.user.User;
 import com.exaple.common.BaseDateTimeEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -52,6 +55,10 @@ public class Post extends BaseDateTimeEntity {
 	@Column(nullable = false)
 	private String content;
 	
+	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE) 
+	private List<Reply> replies;	   // List 순서 유지 (대부분의 경우 List 사용)
+	
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	private Set<PostVoter> postVoters;
+	private Set<PostVoter> postVoters; // Set 중복허용x - 똑같은 사람이 재추천 못하도록
+	
 }

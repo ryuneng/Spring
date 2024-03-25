@@ -3,9 +3,9 @@ package com.example.post; // 20240319 Day20
 import java.util.List;
 import java.util.Set;
 
+import com.example.common.BaseDateTimeEntity;
 import com.example.reply.Reply;
 import com.example.user.User;
-import com.exaple.common.BaseDateTimeEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

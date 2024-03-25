@@ -1,6 +1,6 @@
 package com.example.user; // 20240319 Day20
 
-import com.exaple.common.BaseDateTimeEntity;
+import com.example.common.BaseDateTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

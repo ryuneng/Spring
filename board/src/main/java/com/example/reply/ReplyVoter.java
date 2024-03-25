@@ -1,7 +1,7 @@
 package com.example.reply; // 20240322 Day23
 
+import com.example.common.BaseDateTimeEntity;
 import com.example.user.User;
-import com.exaple.common.BaseDateTimeEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

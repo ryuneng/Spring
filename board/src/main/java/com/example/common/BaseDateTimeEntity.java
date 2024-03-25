@@ -1,4 +1,4 @@
-package com.exaple.common; // 20240320 Day21
+package com.example.common; // 20240320 Day21
 
 import java.time.LocalDateTime;
 

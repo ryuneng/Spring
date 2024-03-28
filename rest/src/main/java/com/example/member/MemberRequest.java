@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class MemberRequest { // form클래스같은 것, 화면 없이 데이터만 제공할 것
 
 	@Schema(description = "이메일", example = "hong@gmail.com")

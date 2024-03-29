@@ -43,7 +43,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">신규 회원 등록폼</h5>
+                <h5 class="modal-title" id="modal-title-member">회원정보 입력폼</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -69,7 +69,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="button" class="btn btn-primary" onclick="createMember()">등록</button>
+                <button type="button" class="btn btn-primary" onclick="createMember()" id="btn-ok">등록</button>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 
-	const url = "http://192.168.0.27/api/v1/members"
+	const url = "http://localhost/api/v1/members"
 	
 	// 회원목록 정보
 	let memberList = [];
@@ -160,9 +160,59 @@
 		formModal.hide();
 	}
 	
-	// 신규 회원등록폼 모달을 화면에 표시하는 함수
-	function showFormModal() {
+	// 신규용, 수정용 회원등록폼 모달을 화면에 표시하는 함수
+	// * 신규 --> showFormModal();
+	// * 수정 --> showFormModal(10);
+	function showFormModal(memberId) {
+		if (memberId) {		// memberId가 undefined가 아닐 때 true로 판정된다.
+			
+			document.querySelector("#modal-title-member").textContent = "회원정보 수정화면";
+			
+			// 수정하기 위해서 모달창을 연 경우
+			let foundMember = memberList.find(m => m.id == memberId);
+		
+			document.querySelector('input[name=email]').value = foundMember.email;
+			document.querySelector('input[name=name]').value = foundMember.name;
+			document.querySelector('input[name=tel]').value = foundMember.tel;
+			
+			document.querySelector("#btn-ok").setAttribute("onclick", "updateMember("+memberId+")"); // setAttribute으로 속성값 변경
+		} else {
+			document.querySelector("#modal-title-member").textContent = "회원정보 등록화면";
+			document.querySelector("#btn-ok").setAttribute("onclick", "createMember()");
+		}
 		formModal.show();
+	}
+	
+	// 회원정보를 수정하는 함수
+	async function updateMember(memberId) {
+		let data = {
+				email: document.querySelector("input[name=email]").value,
+				password: document.querySelector("input[name=password]").value,
+				name: document.querySelector("input[name=name]").value,
+				tel: document.querySelector("input[name=tel]").value
+		}
+		
+		let response = await fetch(url + "/" + memberId, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data)
+		});
+		
+		let jsonData = await response.json();
+		// jsonData --> {status:200, message:"OK", itmes:[{id:20, email:"hong@gmail.com", password:"1234", name:"홍길동", ...}]}
+		if (jsonData.status == 200) {
+			// 수정된 회원정보를 가져온다.
+			let updatedMember = jsonData.items[0];
+			// 수정 전 회원정보의 배열에 저장된 인덱스를 조회한다.
+			let index = memberList.findIndex(m => m.id == updatedMember.id);
+			// 위에서 조회한 인덱스번째 데이터를 1개 삭제하고, 그 위치에 수정된 회원정보를 추가한다.
+			memberList.splice(index, 1, updatedMember);
+			refreshMemberList();
+		}
+		
+		formModal.hide();
 	}
 
 	// 전체 회원정보를 조회하는 함수
@@ -179,14 +229,19 @@
 			return;
 		}
 		
+		// 조회된 전체 회원정보 배열을 memberList변수에 대입
 		memberList = jsonData.items;
-		refreshMemberList();
+		refreshMemberList(); // 화면갱신
 	}
 	
 	// 회원정보를 삭제하는 기능이 구현된 함수
 	async function removeMember(memberId) {
 		// 확인하기 창을 표시한다. 확인을 클릭하면 answer에 true, 취소를 클릭하면 answer에 false값이 대입된다.
-		let answer = confirm("삭제하시겠습니까?");
+		// find메소드는 전달받는 함수가 true를 반환하는 그 순간의 배열값을 반환한다.
+		// 아래 코드에서는 배열에 저장된 회원의 아이디와 삭제할 회원의 아이디가 일치할 때, 그 순간의 회원정보를 반환한다.
+		let foundMember = memberList.find(member => member.id == memberId);
+		
+		let answer = confirm(foundMember.name + "님 회원정보를 삭제하시겠습니까?");
 		
 		if (answer) {
 			let response = await fetch(url + "/" + memberId, {
@@ -194,12 +249,27 @@
 			});
 			let jsonData = await response.json();
 			// jsonData <---- {status:200, message:"삭제가 완료되었습니다.", items:[]}
-			if (jsonData != 200) {
-				alert("회원정보 삭제에 실패하였습니다.");
+			if (jsonData.status == 200) {
+				alert(jsonData.message);
+				
+				/* 1번째 방법
+				// 1. map 메소드 사용 - id만으로 구성된 배열로 변경
+				let index = memberList.map(function(member) {
+					return member.id;
+				// 2. indexOf 메소드 사용 - 해당 id의 index만 선택
+				}).indexOf(memberId);
+				*/
+				
+				// 2번째 방법
+				// 1. map 메소드, 화살표 함수 표현식 사용 + 2. indexOf 메소드 사용
+				let index = memberList.map(member => member.id).indexOf(memberId);
+				
+				// 3. splice 메소드 사용 - 해당 index의 아이템 1개만 삭제
+				memberList.splice(index, 1);
+				refreshMemberList();
+				
 				return;
 			}
-			
-			
 		}
 	}
 	
@@ -209,6 +279,42 @@
 			return;
 		}
 		
+		// 1번째 방법 - javascript의 화살표 표현식 사용 (왼쪽 매개변수 => 오른쪽 구현내용)
+		let rows = memberList.map((member, index) => 
+			`
+				<tr>
+					<td>${index + 1}</td>
+					<td>${member.id}</td>
+					<td>${member.email}</td>
+					<td>${member.name}</td>
+					<td>
+						<button class="btn btn-outline-secondary btn-sm" onclick="removeMember(${member.id})">삭제</button>
+						<button class="btn btn-outline-secondary btn-sm" onclick="showFormModal(${member.id})">수정</button>
+					</td>
+				</tr>
+			`
+		).join("");
+		tbody.innerHTML = rows;
+		
+		/* 2번째 방법 - forEach 사용하지 않고 map과 join을 이용해서 배열 출력 (React에서 많이 사용됨)
+		let rows = memberList.map(function(member, index) {
+			return `
+				<tr>
+					<td>${index + 1}</td>
+					<td>${member.id}</td>
+					<td>${member.email}</td>
+					<td>${member.name}</td>
+					<td>
+						<button class="btn btn-outline-secondary btn-sm" onclick="removeMember(${member.id})">삭제</button>
+						<button class="btn btn-outline-secondary btn-sm" onclick="showFormModal(${member.id})">수정</button>
+					</td>
+				</tr>
+			`
+		}).join("");
+		tbody.innerHTML = rows;
+		*/
+		
+		/* 3번째 방법
 		let rows = "";
 		memberList.forEach(function(member, index) {
 			rows += `
@@ -224,8 +330,10 @@
 				</tr>
 			`;
 		});
+		tbody.innerHTML = rows;
+		*/
 		
-		/*
+		/* 4번째 방법
 		let rows = "";
 		for (let index = 0; index < memberList.length; index++) {
 			let member = memberList[index];
@@ -242,8 +350,8 @@
 				</tr>
 			`;
 		}
-		*/
 		tbody.innerHTML = rows;
+		*/
 	}
 	
 	getMembers();

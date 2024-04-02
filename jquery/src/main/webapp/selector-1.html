@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jQuery</title>
+</head>
+<body>
+	<h1>jQuery 선택자</h1>
+	
+	<div>
+		<p id="p-1" class="sample">내용1</p>
+		<p class="sample">내용2</p>
+		<p class="sample">내용3</p>
+		<p>내용4</p>
+	</div>
+	
+<script src="resources/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	// 모든 p 엘리먼트 선택하기(태그선택자)
+	$("p").css('color', 'red');
+	
+	// 클래스 속성값에 sample이 포함된 엘리먼트 선택하기
+	$(".sample").css('border', '2px solid gray');
+	
+	// 아이디 속성값에 p-1이 포함된 엘리먼트 선택하기
+	$("#p-1").css('background-color', 'lightgreen');
+	
+	$("#p-1, .sample").css('font-size', '30px');
+})
+</script>
+</body>
+</html>

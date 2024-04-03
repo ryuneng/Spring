@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	div {
+		margin: 15px 0;
+		border: 1px solid black;
+		padding: 15px;
+	}
+	
+	span {
+		border: 1px solid black;
+		padding: 5px;
+	}
+	
+	.active {
+		background-color: lightgreen;
+	}
+</style>
+</head>
+<body>
+	<h1>실습</h1>
+	
+	<h3>직원 현황</h3>
+	<div id="box-1">
+		<span>김유신</span>
+		<span>강감찬</span>
+		<span>이순신</span>
+		<span>류관순</span>
+		<span>홍길동</span>
+	</div>
+	
+	<div id="box-bottons">
+		<button type="button" id="btn-down">아래로</button>
+		<button type="button" id="btn-up">위로</button>
+	</div>
+	
+	<h3>참석자 현황</h3>
+	<div id="box-2">
+	
+	</div>
+
+<script src="resources/js/jquery-3.7.1.min.js"></script>
+<script>
+$(function() {
+	// #box-1과 #box-2의 span을 클릭하면 active 상태가 토글된다.
+	// .toggleClass('active')를 사용하세요.
+	$("#box-1 span").click(function() {
+		$(this).toggleClass('active');
+	});
+	
+	$("#box-2").on('click', 'span', function() {
+		$(this).toggleClass('active');
+	});
+	
+	// 아래로 버튼을 클릭하면 #box-1의 span중에서 active 상태의 span 정보가 #box-2에 추가된다. 
+	// 추가된 후에 active 상태를 제거한다.
+	// active 상태의 span이 하나도 없으면 경고창을 표시한다.
+	$("#btn-down").click(function() {
+		
+		if ($("#box-1 .active").length == 0) {
+			alert('이동할 직원을 먼저 선택하세요');
+			return; // 선택된 직원이 없을 때, 빠른 종료
+		}
+		
+		$("#box-1 .active").each(function() {
+			// 선택된 직원의 이름 조회
+			let name = $(this).text();
+			
+			// 밑에 있는 #box-2 내에서 name을 포함하고 있는 span의 갯수 조회
+			let len = $('#box-2 span:contains('+name+')').length;
+			
+			// #box-2에 #box-1에서 선택된 이름을 포함한 span이 없을 때, #box-2에 이름 추가
+			if (len == 0) {
+				let span = `
+					<span>${name}</span>
+				`;
+				$("#box-2").append(span);
+			}
+			// 아래로 이동 후 active 제거
+			$("#box-1 .active").removeClass("active");
+		});
+	});
+	
+	// 위로 버튼을 클릭하면 #box-2의 span중에서 active 상태의 span 정보가 삭제된다.
+	$("#btn-up").click(function() {
+		$("#box-2 .active").remove("#box-2 span");
+	});
+});
+</script>
+</body>
+</html>

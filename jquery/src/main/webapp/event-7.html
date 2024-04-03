@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>이벤트</h1>
+	
+	<table border="1" style="width: 100%;">
+		<thead>
+			<tr>
+				<th><input type="checkbox" id="checkbox-all"></th>
+				<th>번호</th>
+				<th>상품명</th>
+				<th>가격</th>
+				<th>수량</th>
+				<th>구매금액</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		<!-- 
+			<tr th:each="product : ${productList}">
+				<td><input type="checkbox" name="no" value="${product.id}"></td>
+				<td th:text="${product.id}"></td>
+				<td th:text="${product.name}"></td>
+				<td><span th:id="|pro-price-${product.id}|" th:text="${#numbers.format(product.price)}">1,500,000</span> 원</td>
+				...
+					<button id="btn-del-10">삭제</button>
+					<button>주문</button>
+				</td>
+			</tr>
+		 -->
+			<tr>
+				<td><input type="checkbox" name="no" value="10"></td>
+				<td>10</td>
+				<td>아이폰 15</td>
+				<td><span id="pro-price-10">1,500,000</span> 원</td>
+				<td><input type="text" name="amount" id="pro-amount-10" value="1"> 개 <button id="btn-update-amount-10" data-product-id="10">변경</button></td>
+				<td><span id="pro-orderprice-10">1,500,000</span> 원</td>
+				<td>
+					<button id="btn-del-10">삭제</button>
+					<button>주문</button>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="no" value="13"></td>
+				<td>13</td>
+				<td>갤럭시 24</td>
+				<td><span id="pro-price-13">1,200,000</span> 원</td>
+				<td><input type="text" name="amount" id="pro-amount-13" value="1"> 개 <button id="btn-update-amount-13" data-product-id="13">변경</button></td>
+				<td><span id="pro-orderprice-13">1,200,000</span> 원</td>
+				<td>
+					<button id="btn-del-13">삭제</button>
+					<button>주문</button>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="no" value="14"></td>
+				<td>14</td>
+				<td>맥북 프로</td>
+				<td><span id="pro-price-14">2,500,000</span> 원</td>
+				<td><input type="text" name="amount" id="pro-amount-14" value="1"> 개 <button id="btn-update-amount-14" data-product-id="14">변경</button></td>
+				<td><span id="pro-orderprice-14">2,500,000</span> 원</td>
+				<td>
+					<button id="btn-del-14">삭제</button>
+					<button>주문</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div>
+		<p>총 주문금액: <strong id="pro-total-orderprice">5,200,000</strong> 원</p>
+	</div>
+	
+<script src="resources/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	// 전체선택 체크박스를 체크/해제할 때 실행될 이벤트 핸들러 등록하기
+	$("#checkbox-all").change(function() {
+		let currentCheckedStatus = $(this).prop('checked');
+		$(":checkbox[name=no]").prop("checked", currentCheckedStatus);
+		
+		updateTotalOrderPrice();
+	});
+	
+	// 상품 체크박스를 체크/해제할 때 실행될 이벤트 핸들러 등록하기
+	$(":checkbox[name=no]").change(function() {
+		// 상품 체크박스 전체 갯수를 조회한다.
+		let len = $(":checkbox[name=no]").length;
+		// 상품 체크박스 중에서 체크된 갯수를 조회한다.
+		let checkedLen = $(":checkbox[name=no]:checked").length;
+		
+		// 전체 갯수와 체크된 갯수가 일치하면 전체 선택 체크박스를 체크하고, 아니면 해제한다.
+		if (len == checkedLen) {
+			$("#checkbox-all").prop('checked', true)
+		} else {
+			$("#checkbox-all").prop('checked', false)
+		}
+		
+		updateTotalOrderPrice();
+	});
+	
+	// 삭제버튼을 클릭했을 때 실행될 이벤트 핸들러 등록하기
+	$('button[id^=btn-del]').click(function() {
+		$(this).closest('tr').remove();
+		
+		updateTotalOrderPrice();
+	});
+	
+	// 수량변경 버튼을 클릭했을 때 실행되는 이벤트 핸들러 등록하기
+	$('button[id^=btn-update-amount]').click(function() {
+		// 이벤트가 발생한 버튼의 data-product-id 속성값을 조회한다. <button data-product-id="상품아이디">변경</button>
+		let productId = $(this).attr('data-product-id');
+		// 상품가격과 변경수량 조회하기
+		// 상품가격은 <span id="pro-price-상품아이디">1,000,000</span> 이 엘리먼트의 텍스트를 조회한다.
+		let price = trimComma($("#pro-price-" + productId).text());
+		// 변경수량은 <input type="text" name="amount" id="pro-amount-상품아이디" /> 이 엘리먼트(입력필드)의 값을 조회한다.
+		let amount = $("#pro-amount-" + productId).val();
+		let orderPrice = price * amount;
+		
+		// 계산된 구매금액을 <span id="pro-orderprice-상품아이디"></span> 엘리먼트의 텍스트로 반영시킨다.
+		$("#pro-orderprice-" + productId).text(currency(orderPrice));
+		
+		updateTotalOrderPrice();
+	});
+	
+	// 총 주문가격을 변경하는 함수
+	function updateTotalOrderPrice() {
+		// * 값을 변경할 때는 묵시적 반복으로 일괄변경이 가능하지만, 값을 조회할 때는 전부 가지고 있는 값이 다르기 때문에 묵시적 반복이 불가함
+		
+		// .each(함수)는 $()로 선택된 엘리먼트를 하나씩 처리할 때 사용한다.
+		// .each(함수)에서 함수는 선택된 엘리먼트를 하나씩 전달받아서 실행되는 콜백함수다. (*콜백함수 : 시스템에게 실행해달라고 등록만 해놓는 함수, 호출하는 시점을 내가 직접 결정하지 않음)
+		// .each(함수)의 함수 내부에서 사용되는 this에는 선택된 엘리먼트가 하나씩 전달된다.
+		let totalOrderPrice = 0;
+		$("tbody tr:has(:checkbox:checked) span[id^=pro-orderprice]").each(function() {
+			let orderPrice = trimComma($(this).text());
+			totalOrderPrice += orderPrice;
+		});
+		
+		$("#pro-total-orderprice").text(currency(totalOrderPrice));
+	}
+	
+	// 숫자 콤마 삭제하는 함수
+	function trimComma(text) {
+		return parseInt(text.replaceAll(',', ''));
+	}
+	
+	// 숫자 콤마 추가하는 함수
+	function currency(value) {
+		// .toLocaleString() : 숫자, 날짜를 지역화된 문자열로 변환해서 반환한다.
+		return new Number(value).toLocaleString();
+	}
+
+	// 선택된 엘리먼트에서 click 이벤트를 강제로 발생시킨다.
+	// 본 예시에는 전체선택 체크박스 엘리먼트에서 click 이벤트가 발생되게 했다.
+	// 체크박스 엘리먼트에서 click 이벤트가 발생하면 체크박스의 상태가 변경(change 이벤트 발생)된다.
+	// 즉, 체크박스 엘리먼트에서 click 이벤트가 강제로 발생되게 해서 체크박스 상태를 변경하고, 위에서 정의한 이벤트 핸들러 함수가 실행되게 한 것이다.
+	$("#checkbox-all").trigger('click'); // 페이지 로딩 시 자동으로 click 되어있음(click이벤트 발생) -> click하면 change이벤트 발생
+});
+</script>
+</body>
+</html>

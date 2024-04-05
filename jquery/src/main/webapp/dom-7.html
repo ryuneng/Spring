@@ -35,16 +35,19 @@
 <script src="resources/js/jquery-3.7.1.min.js"></script>
 <script type="text/javascript">
 $(function() {
-	// 방법1) 국어, 영어, 수학점수가 있는 td 전부 찾기
-	// $("tbody").find("td:nth-child(3), td:nth-child(4), td:nth-child(5)").filter(function() {
 	
-	// 방법2) $(선택자).filter(콜백함수)는 선택자로 선택된 엘리먼트마다 콜백함수를 호출해서 콜백함수가 true를 반환하는 것만 최종적으로 선택한다.
-	// .filter() 메소드의 콜백함수가 true를 반환하는 엘리먼트만 선택하기
-	$("tbody td.score").filter(function() {
-		// 콜백함수 내부의 this에는 td.score로 선택된 엘리먼트가 차례로 하나씩 전달된다.
-		let score = parseInt($(this).text());
-		return score <= 40;
-	}).css('background-color', 'yellow');
+	/*
+		.end() : 맨 마지막 필터메소드 실행 전 상태로 jQuery집합객체의 상태를 되돌리는 메소드
+				아래 예시에서 $('table').필터메소드1().조작메소드1()
+									.end()
+									.필터메소드2().조작메소드2()
+				$('table') 선택자함수로 선택된 엘리먼트를 기준으로 필터메소드1()을 실행해서 엘리먼트를 선택하고, 조작메소드1()실행한 다음
+				end() 메소드를 호출해서 필터메소드1() 실행 전 상태로 되돌린 다음
+				다시 $('table') 선택자함수로 선택된 엘리먼트를 기준으로 필터메소드2()를 실행해서 엘리먼트를 선택하고, 조작메소드2()를 실행했다.
+	*/
+	$('table').find('thead').css('background-color', 'lightgreen')
+			  .end()
+			  .find('tbody').css('background-color', '#eee');
 	
 	// 총점, 평균 계산
 	$("tbody tr").each(function() {
@@ -59,6 +62,17 @@ $(function() {
              .prev()
              .text(average);
    });
+
+	// 방법1) 국어, 영어, 수학점수가 있는 td 전부 찾기
+	// $("tbody").find("td:nth-child(3), td:nth-child(4), td:nth-child(5)").filter(function() {
+	
+	// 방법2) $(선택자).filter(콜백함수)는 선택자로 선택된 엘리먼트마다 콜백함수를 호출해서 콜백함수가 true를 반환하는 것만 최종적으로 선택한다.
+	// .filter() 메소드의 콜백함수가 true를 반환하는 엘리먼트만 선택하기
+	$("tbody td.score").filter(function() {
+		// 콜백함수 내부의 this에는 td.score로 선택된 엘리먼트가 차례로 하나씩 전달된다.
+		let score = parseInt($(this).text());
+		return score <= 40;
+	}).css('background-color', 'yellow');
 });
 </script>
 </body>
